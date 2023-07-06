@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id        String   @id @default(uuid())
+  name      String?  @unique(map: "unq_admin_name") @db.VarChar(100)
+  username  String?  @unique(map: "unq_admin_username") @db.VarChar(100)
+  user_id   String?  @unique
+  user      users?   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([user_id], map: "fk_admin_users")
+}
+
+model users {
+  id       String      @id @default(uuid())
+  tg_id    String?     @unique(map: "unq_users_tg_id") @db.VarChar(100)
+  fName    String?     @db.VarChar(100)
+  lName    String?     @db.VarChar(100)
+  username String?     @unique(map: "unq_users_username") @db.VarChar(100)
+  phone    String?     @unique(map: "unq_users_phone") @db.VarChar(15)
+  email    String?     @unique(map: "unq_users_email") @db.VarChar(100)
+  admin    admin?
+  status   userStatus? @default(active)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum userStatus {
+  active
+  suspended
+  deactivated
+}
