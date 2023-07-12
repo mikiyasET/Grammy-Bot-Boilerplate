@@ -37,6 +37,12 @@ model users {
   updatedAt DateTime @updatedAt
 }
 
+model Session {
+  id    Int    @id @default(autoincrement())
+  key   String @unique
+  value String
+}
+
 enum userStatus {
   active
   suspended

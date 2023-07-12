@@ -5,8 +5,9 @@ import {Inline_KYB} from "../bot/inline_kyb";
 import {KYB} from "../bot/kyb";
 import {I18n} from "@grammyjs/i18n";
 import {getAdminUser} from "../controllers/admin.controller";
-import {freeStorage} from "@grammyjs/storage-free";
 import {getUserByTID} from "../controllers/user.controller";
+import {PrismaAdapter} from "@grammyjs/storage-prisma";
+import {prisma} from "./prisma";
 
 const BOT_DEVELOPER = 353575758;
 const token = process.env.BOT_TOKEN ?? "";
@@ -26,7 +27,7 @@ bot.use(session({
         data: null,
         list: [],
     }),
-    storage: freeStorage<sessionData>(bot.token),
+    storage: new PrismaAdapter(prisma.session),
 }));
 bot.use(i18n);
 bot.use(async (ctx, next) => {
